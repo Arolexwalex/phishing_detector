@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Geist', sans-serif; background-color: #1e293b; color: #f1f5f9; }
+        h1 { font-weight: 500; }
+        .input-box { border-color: #4b5563; }
+        .input-box:focus { border-color: #60a5fa; outline: none; }
+        .btn { background-color: #60a5fa; }
+        .btn:hover { background-color: #3b82f6; }
+        .btn:disabled { background-color: #9ca3af; cursor: not-allowed; }
+    </style>
+    <script>
+        function toggleButton() {
+            const textarea = document.querySelector('textarea[name="email"]');
+            const button = document.querySelector('input[type="submit"]');
+            button.disabled = textarea.value.trim() === '';
+        }
+        window.onload = toggleButton;
+        document.querySelector('textarea[name="email"]').addEventListener('input', toggleButton);
+
+        function hideResult() {
+            const result = document.getElementById('result');
+            if (result) {
+                let timeoutId = result.dataset.timeoutId;
+                if (timeoutId) clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => result.style.display = 'none', 5000);
+                result.dataset.timeoutId = timeoutId;
+            }
+        }
+        document.querySelector('form').addEventListener('submit', hideResult);
+    </script>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl mb-4 text-center">Phishing Detector</h1>
+        <form method="post" class="space-y-4">
+            <textarea name="email" rows="4" cols="50" placeholder="Paste email text here..." class="w-full p-2 bg-gray-700 text-white input-box rounded" oninput="toggleButton()"></textarea><br>
+            <input type="submit" value="Check Email" class="w-full p-2 btn text-white rounded cursor-pointer" disabled>
+        </form>
+        {% if result %}
+            <p id="result" class="mt-4 text-center"><strong>Result: </strong>{{ result }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
